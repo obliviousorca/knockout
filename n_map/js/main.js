@@ -1,288 +1,288 @@
 var locations = [{
-         title: 'New York , USA',
-         type: 'NA City',
-         location: {
-             lat: 40.730610,
-             lng: -73.935242
-         }
-     },
-
-     {
-         title: 'London , England',
-         type: 'EU City',
-         location: {
-             lat: 51.508530,
-             lng: -0.076132
-         }
-
-     },
-
-     {
-         title: 'Rome , Italy',
-         type: 'EU City',
-         location: {
-             lat: 41.9028,
-             lng: 12.4964
-         }
-     },
-
-     {
-         title: 'Reykjavik , Iceland',
-         type: 'EU City',
-         location: {
-             lat: 64,
-             lng: -21
-         }
-     },
+        title: 'New York , USA',
+        type: 'NA City',
+        location: {
+            lat: 40.730610,
+            lng: -73.935242
+        }
+    },
+
+    {
+        title: 'London , England',
+        type: 'EU City',
+        location: {
+            lat: 51.508530,
+            lng: -0.076132
+        }
+
+    },
+
+    {
+        title: 'Rome , Italy',
+        type: 'EU City',
+        location: {
+            lat: 41.9028,
+            lng: 12.4964
+        }
+    },
 
-     {
-         title: 'Ottawa , Canada',
-         type: 'NA City',
-         location: {
-             lat: 45.4215,
-             lng: -75.6981200
-         }
-     },
+    {
+        title: 'Reykjavik , Iceland',
+        type: 'EU City',
+        location: {
+            lat: 64,
+            lng: -21
+        }
+    },
 
-     {
-         title: 'Sydney , Australia',
-         type: 'AU City',
-         location: {
-             lat: -33,
-             lng: 151
-         }
-     }
+    {
+        title: 'Ottawa , Canada',
+        type: 'NA City',
+        location: {
+            lat: 45.4215,
+            lng: -75.6981200
+        }
+    },
 
- ];
- var details;
- var a;
- var markers_visibility = [];
- var fourSqrsVenues = [];
- var fourSqrsData = [];
- var markers = [];
- var info_windows = [];
- var latlon;
- var location_marker;
- var map;
+    {
+        title: 'Sydney , Australia',
+        type: 'AU City',
+        location: {
+            lat: -33,
+            lng: 151
+        }
+    }
 
- function createMarker(lat, lon, infoText, imgData, typ) {
+];
+var details;
+var a;
+var markers_visibility = [];
+var fourSqrsVenues = [];
+var fourSqrsData = [];
+var markers = [];
+var info_windows = [];
+var latlon;
+var location_marker;
+var map;
 
-     var newmarker = new google.maps.Marker({
+function createMarker(lat, lon, infoText, imgData, typ) {
 
-         position: new google.maps.LatLng(lat, lon),
+    var newmarker = new google.maps.Marker({
 
-         map: map,
+        position: new google.maps.LatLng(lat, lon),
 
-         title: infoText,
+        map: map,
 
-         type: typ
+        title: infoText,
 
-     });
+        type: typ
 
-     markers_visibility.push(newmarker);
+    });
 
-     function toggleBounce() {
-         if (newmarker.getAnimation() === null) {
-             newmarker.setAnimation(google.maps.Animation.BOUNCE);
-             setTimeout(function() {
-                 newmarker.setAnimation(null);
-             }, 700);
+    markers_visibility.push(newmarker);
 
-         } else {
-             newmarker.setAnimation(null);
-         }
-     }
+    function toggleBounce() {
+        if (newmarker.getAnimation() === null) {
+            newmarker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function() {
+                newmarker.setAnimation(null);
+            }, 700);
 
-     newmarker.addListener('click', toggleBounce);
+        } else {
+            newmarker.setAnimation(null);
+        }
+    }
 
-     a = newmarker.infowindow = new google.maps.InfoWindow({
+    newmarker.addListener('click', toggleBounce);
 
-         content: imgData,
-         type: typ
-     });
+    a = newmarker.infowindow = new google.maps.InfoWindow({
 
-     google.maps.event.addListener(newmarker, 'click', function() {
+        content: imgData,
+        type: typ
+    });
 
+    google.maps.event.addListener(newmarker, 'click', function() {
 
-         var test = fourSqrsVenues;
 
-         this.infowindow.open(map, this);
+        var test = fourSqrsVenues;
 
-     });
- }
+        this.infowindow.open(map, this);
 
- function processMarker(_marker) {
-     var _venueId;
+    });
+}
 
-     var _venueData;
+function processMarker(_marker) {
+    var _venueId;
 
-     var fourSqrAPI = "https://api.foursquare.com/v2/venues/explore?ll=" + _marker.position.lat() + "," + _marker.position.lng() + "&client_id=RMUX5HBSR5HMDKG3RCXK3O2VIY0BCRNMSD14V2DGQV0PK02U&client_secret=I3TIMAEYGCPDPB1T0332OOF3O2JP454OZ0PVCGWOXB1UIR4Y&v=20170323";
+    var _venueData;
 
-     $.getJSON(fourSqrAPI).done(function(data) {
-          
-         $.each(data.response.groups, function(i, groups) {
+    var fourSqrAPI = "https://api.foursquare.com/v2/venues/explore?ll=" + _marker.position.lat() + "," + _marker.position.lng() + "&client_id=RMUX5HBSR5HMDKG3RCXK3O2VIY0BCRNMSD14V2DGQV0PK02U&client_secret=I3TIMAEYGCPDPB1T0332OOF3O2JP454OZ0PVCGWOXB1UIR4Y&v=20170323";
 
-             if (i === 0) {
+    $.getJSON(fourSqrAPI).done(function(data) {
 
-                 $.each(groups.items, function(j, items) {
+        $.each(data.response.groups, function(i, groups) {
 
-                     if (j === 0) {
+            if (i === 0) {
 
-                         var venueName = items.venue.name;
+                $.each(groups.items, function(j, items) {
 
-                         var venueCat = items.venue.categories[0].name;
+                    if (j === 0) {
 
-                         $.each(items.tips, function(k, tips) {
+                        var venueName = items.venue.name;
 
-                             if (k === 0) {
+                        var venueCat = items.venue.categories[0].name;
 
-                                 var fName = tips.user.firstName;
+                        $.each(items.tips, function(k, tips) {
 
-                                 var lName = tips.user.lastName;
+                            if (k === 0) {
 
-                                 if (fName === null) fName = "";
+                                var fName = tips.user.firstName;
 
-                                 if (lName === null) lName = "";
+                                var lName = tips.user.lastName;
 
-                                 var userDetails = fName + " " + lName;
+                                if (fName === null) fName = "";
 
-                                 details = "<div style='font-size:17px;text-decoration:underline;font-weight:bold; margin-bottom:7px;'>" + _marker.title + "</div> <div style='margin-bottom:3px;'><span style='font-size:13px;font-weight:bold;'>Name:</span> " + venueName + "</br></div>  <div style='margin-bottom:3px;'> <span style='font-size:13px;font-weight:bold;'>Category:</span> " + venueCat + "</br></div>  <span style='font-size:13px;font-weight:bold;'>Tip:</span> " + tips.text + " (<i>submitted by: " + userDetails + "</i>)";
+                                if (lName === null) lName = "";
 
-                                 createMarker(_marker.position.lat(), _marker.position.lng(), _marker.title, details, _marker.type);
-                             }
-                         });
-                     }
-                 });
-             }
-         });
-     }).fail(function() {
-         console.log("error");
-     });
- }
+                                var userDetails = fName + " " + lName;
 
- function randomIntFromInterval(min, max) {
-     return Math.floor(Math.random() * (max - min + 1) + min);
- }
+                                details = "<div style='font-size:17px;text-decoration:underline;font-weight:bold; margin-bottom:7px;'>" + _marker.title + "</div> <div style='margin-bottom:3px;'><span style='font-size:13px;font-weight:bold;'>Name:</span> " + venueName + "</br></div>  <div style='margin-bottom:3px;'> <span style='font-size:13px;font-weight:bold;'>Category:</span> " + venueCat + "</br></div>  <span style='font-size:13px;font-weight:bold;'>Tip:</span> " + tips.text + " (<i>submitted by: " + userDetails + "</i>)";
 
- function initAutocomplete() {
-     map = new google.maps.Map(document.getElementById('map'), {
+                                createMarker(_marker.position.lat(), _marker.position.lng(), _marker.title, details, _marker.type);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }).fail(function() {
+        console.log("error");
+    });
+}
 
-         center: {
-             lat: 31.7917,
-             lng: 7.0926
-         },
+function randomIntFromInterval(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
-         zoom: 3,
+function initAutocomplete() {
+    map = new google.maps.Map(document.getElementById('map'), {
 
-         mapTypeId: 'roadmap'
-     });
+        center: {
+            lat: 31.7917,
+            lng: 7.0926
+        },
 
-     for (var i = 0; i < locations.length; i++) {
+        zoom: 3,
 
-         location_marker = new google.maps.Marker({
+        mapTypeId: 'roadmap'
+    });
 
-             map: map,
+    for (var i = 0; i < locations.length; i++) {
 
-             title: locations[i].title,
+        location_marker = new google.maps.Marker({
 
-             position: locations[i].location,
+            map: map,
 
-             type: locations[i].type
-         });
-         location_marker.setVisible(false);
-         vm.locArray()[i].marker = location_marker;
+            title: locations[i].title,
 
+            position: locations[i].location,
 
-         markers.push(location_marker);
+            type: locations[i].type
+        });
+        location_marker.setVisible(false);
+        vm.locArray()[i].marker = location_marker;
 
-         processMarker(location_marker, i);
-     }
- }
 
- var ViewModel = function() {
+        markers.push(location_marker);
 
-     this.categoryList = [],
+        processMarker(location_marker, i);
+    }
+}
 
-         // dynamically retrieve categories to
-         // create drop down list later
-         locations.map(locat => {
-             if (!this.categoryList.includes(locat.type))
-                 this.categoryList.push(locat.type);
-         }),
+var ViewModel = function() {
 
-         this.locArray = ko.observableArray(locations);
-     // Observable Array for drop down list
-     this.categories = ko.observableArray(this.categoryList);
-     // This will hold the selected value from drop down menu
-     this.selectedCategory = ko.observable();
-     /**
-             * Filter function, return filtered food by
-             * selected category from
-      <select>
-          */
-     this.filterLoc = ko.computed(() => {
-             if (!this.selectedCategory()) {
-                 // No input found, return all food
-                 return this.locArray();
-             } else {
-                 // input found, match food type to filter
-                 return ko.utils.arrayFilter(this.locArray(), (locat) => {
+    this.categoryList = [],
 
+        // dynamically retrieve categories to
+        // create drop down list later
+        locations.map(locat => {
+            if (!this.categoryList.includes(locat.type))
+                this.categoryList.push(locat.type);
+        }),
 
-                     for (var i = 0; i < markers_visibility.length; i++) {
+        this.locArray = ko.observableArray(locations);
+    // Observable Array for drop down list
+    this.categories = ko.observableArray(this.categoryList);
+    // This will hold the selected value from drop down menu
+    this.selectedCategory = ko.observable();
+    /**
+            * Filter function, return filtered food by
+            * selected category from
+     <select>
+         */
+    this.filterLoc = ko.computed(() => {
+            if (!this.selectedCategory()) {
+                // No input found, return all food
+                return this.locArray();
+            } else {
+                // input found, match food type to filter
+                return ko.utils.arrayFilter(this.locArray(), (locat) => {
 
-                         markers_visibility[i].infowindow.close(map, markers_visibility[i]);
 
-                         markers_visibility[i].setVisible(false);
-                        
-                         if (this.selectedCategory() === markers_visibility[i].type) {
-                             var test = "";
-                             markers_visibility[i].setVisible(true);
-                         }
-                     }
-                     return (locat.type === this.selectedCategory());
-                 });
-             } //.conditional
-         }), //.filterFood
-         //.constructor
+                    for (var i = 0; i < markers_visibility.length; i++) {
 
-  
-         this.focusMarker = function(place) {
-             
-             console.log(this.title);
-            
+                        markers_visibility[i].infowindow.close(map, markers_visibility[i]);
 
-             for (var i = 0; i < markers_visibility.length; i++) {
-                  
-                 markers_visibility[i].infowindow.close(map, markers_visibility[i]);
+                        markers_visibility[i].setVisible(false);
 
-                 if (this.title === markers_visibility[i].title) {
-    
-                     markers_visibility[i].infowindow.open(map, markers_visibility[i]);
-		     markers_visibility[i].setAnimation(google.maps.Animation.BOUNCE);
+                        if (this.selectedCategory() === markers_visibility[i].type) {
+                            var test = "";
+                            markers_visibility[i].setVisible(true);
+                        }
+                    }
+                    return (locat.type === this.selectedCategory());
+                });
+            } //.conditional
+        }), //.filterFood
+        //.constructor
 
 
-                 }
+        this.focusMarker = function(place) {
 
-             }
-          
-             map.setCenter(this.location);
+            console.log(this.title);
 
-             map.setZoom(4);
 
-         };
- };
+            for (var i = 0; i < markers_visibility.length; i++) {
 
- var vm = new ViewModel();
- ko.applyBindings(vm);
+                markers_visibility[i].infowindow.close(map, markers_visibility[i]);
 
- function gmapsError() {
-     console.log("Google Maps has failed to load. Please check your internet connection and try again.");
- }
+                if (this.title === markers_visibility[i].title) {
 
- $('.hamburger').on('click', function(e) {
-     // Prevent link from jumping to the top of the page
-     e.preventDefault();
-     // If menu is already showing, slide it up. Otherwise, slide it down.
-     $('.menu').toggleClass('slide-down');
- });
+                    markers_visibility[i].infowindow.open(map, markers_visibility[i]);
+                    markers_visibility[i].setAnimation(google.maps.Animation.BOUNCE);
+
+
+                }
+
+            }
+
+            map.setCenter(this.location);
+
+            map.setZoom(4);
+
+        };
+};
+
+var vm = new ViewModel();
+ko.applyBindings(vm);
+
+function gmapsError() {
+    console.log("Google Maps has failed to load. Please check your internet connection and try again.");
+}
+
+$('.hamburger').on('click', function(e) {
+    // Prevent link from jumping to the top of the page
+    e.preventDefault();
+    // If menu is already showing, slide it up. Otherwise, slide it down.
+    $('.menu').toggleClass('slide-down');
+});
